@@ -5,7 +5,7 @@ WebServer::WebServer()
     //http_conn类对象
     users = new http_conn[MAX_FD];
 
-    //root文件夹路径
+    // 获取当前工作目录并将其与"/root" 路径拼接，存储在m_root中
     char server_path[200];
     getcwd(server_path, 200);
     char root[6] = "/root";
@@ -19,10 +19,10 @@ WebServer::WebServer()
 
 WebServer::~WebServer()
 {
-    close(m_epollfd);
-    close(m_listenfd);
-    close(m_pipefd[1]);
-    close(m_pipefd[0]);
+    close(m_epollfd);       // 关闭epoll
+    close(m_listenfd);      // 关闭监听套接字
+    close(m_pipefd[1]);     // 关闭管道
+    close(m_pipefd[0]);     // 关闭管道
     delete[] users;
     delete[] users_timer;
     delete m_pool;
@@ -74,7 +74,7 @@ void WebServer::trig_mode()
 
 void WebServer::log_write()
 {
-    if (0 == m_close_log)
+    if (0 == m_close_log)   // 为1表示日志关闭
     {
         //初始化日志
         if (1 == m_log_write)

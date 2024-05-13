@@ -16,6 +16,7 @@ connection_pool::connection_pool()
 	m_FreeConn = 0;
 }
 
+// 梅耶单例模式
 connection_pool *connection_pool::GetInstance()
 {
 	static connection_pool connPool;
@@ -32,10 +33,11 @@ void connection_pool::init(string url, string User, string PassWord, string DBNa
 	m_DatabaseName = DBName;
 	m_close_log = close_log;
 
+	// 循环创建指定数量的数据库连接
 	for (int i = 0; i < MaxConn; i++)
 	{
 		MYSQL *con = NULL;
-		con = mysql_init(con);
+		con = mysql_init(con); // 初始化MySQL连接
 
 		if (con == NULL)
 		{
@@ -64,14 +66,15 @@ MYSQL *connection_pool::GetConnection()
 {
 	MYSQL *con = NULL;
 
-	if (0 == connList.size())
+	if (0 == connList.size())	// 连接池为空，直接返回NULL
 		return NULL;
 
-	reserve.wait();
+	reserve.wait();				// 调用sem的wait操作，等待直到有可用连接
 	
 	lock.lock();
 
-	con = connList.front();
+	// 从连接池的前面获取连接
+	con = connList.front();		
 	connList.pop_front();
 
 	--m_FreeConn;
