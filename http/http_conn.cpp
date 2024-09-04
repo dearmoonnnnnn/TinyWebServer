@@ -113,9 +113,10 @@ void http_conn::close_conn(bool real_close)
 void http_conn::init(int sockfd, const sockaddr_in &addr, char *root, int TRIGMode,
                      int close_log, string user, string passwd, string sqlname)
 {
-    m_sockfd = sockfd;
-    m_address = addr;
+    m_sockfd = sockfd;  // 设置套接字文件描述符
+    m_address = addr;   // 设置套接字地址
 
+    // 将套接字添加到 epoll 监视列表中
     addfd(m_epollfd, sockfd, true, m_TRIGMode);
     m_user_count++;
 

@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
     //需要修改的数据库信息,登录名,密码,库名
     string user = "root";
     string passwd = "root";
-    string databasename = "qgydb";
+    string databasename = "yourdb";
 
     //命令行解析
     Config config;
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     //日志
     server.log_write();
 
-    //数据库
+    //数据库连接池
     server.sql_pool();
 
     //线程池

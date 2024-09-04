@@ -32,24 +32,30 @@ public:
     static const int FILENAME_LEN = 200;
     static const int READ_BUFFER_SIZE = 2048;
     static const int WRITE_BUFFER_SIZE = 1024;
+
+    // 请求方法
     enum METHOD
     {
-        GET = 0,
-        POST,
-        HEAD,
-        PUT,
-        DELETE,
-        TRACE,
-        OPTIONS,
-        CONNECT,
-        PATH
+        GET = 0,    // 获取资源
+        POST,       // 提交数据
+        HEAD,       // 获取头部信息
+        PUT,        // 创建资源，aka 上传文件
+        DELETE,     // 删除资源
+        TRACE,      // 追踪请求
+        OPTIONS,    // 获取服务器支持的HTTP方法
+        CONNECT,    // 
+        PATH        // 
     };
+
+    // 主状态机？
     enum CHECK_STATE
     {
         CHECK_STATE_REQUESTLINE = 0,
         CHECK_STATE_HEADER,
         CHECK_STATE_CONTENT
     };
+
+    // 响应状态
     enum HTTP_CODE
     {
         NO_REQUEST,
@@ -61,6 +67,8 @@ public:
         INTERNAL_ERROR,
         CLOSED_CONNECTION
     };
+
+    // 行状态
     enum LINE_STATUS
     {
         LINE_OK = 0,
