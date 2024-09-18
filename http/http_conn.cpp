@@ -204,7 +204,7 @@ bool http_conn::read_once()
     }
     int bytes_read = 0;
 
-    //LT读取数据
+    // LT读取数据
     if (0 == m_TRIGMode)
     {
         bytes_read = recv(m_sockfd, m_read_buf + m_read_idx, READ_BUFFER_SIZE - m_read_idx, 0);
@@ -217,7 +217,7 @@ bool http_conn::read_once()
 
         return true;
     }
-    //ET读数据
+    // ET读数据
     else
     {
         while (true)
@@ -287,7 +287,7 @@ http_conn::HTTP_CODE http_conn::parse_request_line(char *text)
     return NO_REQUEST;
 }
 
-//解析http请求的一个头部信息
+// 解析http请求的一个头部信息
 http_conn::HTTP_CODE http_conn::parse_headers(char *text)
 {
     if (text[0] == '\0')
@@ -333,7 +333,7 @@ http_conn::HTTP_CODE http_conn::parse_content(char *text)
     if (m_read_idx >= (m_content_length + m_checked_idx))
     {
         text[m_content_length] = '\0';
-        //POST请求中最后为输入的用户名和密码
+        // POST请求中最后为输入的用户名和密码
         m_string = text;
         return GET_REQUEST;
     }
