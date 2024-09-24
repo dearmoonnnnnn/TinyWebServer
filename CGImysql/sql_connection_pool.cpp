@@ -23,7 +23,7 @@ connection_pool *connection_pool::GetInstance()
 	return &connPool;
 }
 
-//构造初始化
+// 构造初始化
 void connection_pool::init(string url, string User, string PassWord, string DBName, int Port, int MaxConn, int close_log)
 {
 	m_url = url;
@@ -60,7 +60,7 @@ void connection_pool::init(string url, string User, string PassWord, string DBNa
 	m_MaxConn = m_FreeConn;
 }
 
-//当有请求时，从数据库连接池中返回一个可用连接，更新使用和空闲连接数
+// 当有请求时，从数据库连接池中返回一个可用连接，更新使用和空闲连接数
 MYSQL *connection_pool::GetConnection()
 {
 	MYSQL *con = NULL;
@@ -83,7 +83,7 @@ MYSQL *connection_pool::GetConnection()
 	return con;
 }
 
-//释放当前使用的连接
+// 释放当前使用的连接
 bool connection_pool::ReleaseConnection(MYSQL *con)
 {
 	if (NULL == con)
@@ -101,7 +101,7 @@ bool connection_pool::ReleaseConnection(MYSQL *con)
 	return true;
 }
 
-//销毁数据库连接池
+// 销毁数据库连接池
 void connection_pool::DestroyPool()
 {
 
@@ -122,7 +122,7 @@ void connection_pool::DestroyPool()
 	lock.unlock();
 }
 
-//当前空闲的连接数
+// 当前空闲的连接数
 int connection_pool::GetFreeConn()
 {
 	return this->m_FreeConn;
