@@ -56,7 +56,7 @@ int setnonblocking(int fd)
     return old_option;
 }
 
-// 将内核事件表注册读事件，ET模式，选择开启EPOLLONESHOT
+// 将内核事件表注册读事件，ET 模式，选择开启 EPOLLONESHOT
 void addfd(int epollfd, int fd, bool one_shot, int TRIGMode)
 {
     epoll_event event;
@@ -80,7 +80,7 @@ void removefd(int epollfd, int fd)
     close(fd);
 }
 
-// 将事件重置为EPOLLONESHOT
+// 将事件重置为 EPOLLONESHOT
 void modfd(int epollfd, int fd, int ev, int TRIGMode)
 {
     epoll_event event;
@@ -120,7 +120,7 @@ void http_conn::init(int sockfd, const sockaddr_in &addr, char *root, int TRIGMo
     addfd(m_epollfd, sockfd, true, m_TRIGMode);
     m_user_count++;
 
-    //当浏览器出现连接重置时，可能是网站根目录出错或http响应格式出错或者访问的文件中内容完全为空
+    //当浏览器出现连接重置时，可能是网站根目录出错或 http 响应格式出错或者访问的文件中内容完全为空
     doc_root = root;
     m_TRIGMode = TRIGMode;
     m_close_log = close_log;
@@ -133,7 +133,7 @@ void http_conn::init(int sockfd, const sockaddr_in &addr, char *root, int TRIGMo
 }
 
 // 初始化新接受的连接
-// check_state默认为分析请求行状态
+// check_state 默认为分析请求行状态
 void http_conn::init()
 {
     mysql = NULL;
@@ -204,7 +204,7 @@ bool http_conn::read_once()
     }
     int bytes_read = 0;
 
-    //LT读取数据
+    // LT 读取数据
     if (0 == m_TRIGMode)
     {
         bytes_read = recv(m_sockfd, m_read_buf + m_read_idx, READ_BUFFER_SIZE - m_read_idx, 0);
@@ -217,7 +217,7 @@ bool http_conn::read_once()
 
         return true;
     }
-    //ET读数据
+    // ET 读数据
     else
     {
         while (true)
@@ -239,7 +239,7 @@ bool http_conn::read_once()
     }
 }
 
-// 解析http请求行，获得请求方法，目标url及http版本号
+// 解析 http 请求行，获得请求方法，目标url及http版本号
 http_conn::HTTP_CODE http_conn::parse_request_line(char *text)
 {
     m_url = strpbrk(text, " \t");
@@ -287,7 +287,7 @@ http_conn::HTTP_CODE http_conn::parse_request_line(char *text)
     return NO_REQUEST;
 }
 
-//解析http请求的一个头部信息
+// 解析 http 请求的一个头部信息
 http_conn::HTTP_CODE http_conn::parse_headers(char *text)
 {
     if (text[0] == '\0')
