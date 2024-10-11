@@ -195,7 +195,7 @@ http_conn::LINE_STATUS http_conn::parse_line()
 }
 
 // 循环读取客户数据，直到无数据可读或对方关闭连接
-// 非阻塞ET工作模式下，需要一次性将数据读完
+// 非阻塞 ET 工作模式下，需要一次性将数据读完
 bool http_conn::read_once()
 {
     if (m_read_idx >= READ_BUFFER_SIZE)
@@ -217,6 +217,8 @@ bool http_conn::read_once()
 
         return true;
     }
+
+
     // ET 读数据
     else
     {
@@ -333,7 +335,7 @@ http_conn::HTTP_CODE http_conn::parse_content(char *text)
     if (m_read_idx >= (m_content_length + m_checked_idx))
     {
         text[m_content_length] = '\0';
-        //POST请求中最后为输入的用户名和密码
+        // POST 请求中最后为输入的用户名和密码
         m_string = text;
         return GET_REQUEST;
     }
@@ -522,6 +524,7 @@ void http_conn::unmap()
         m_file_address = 0;
     }
 }
+
 bool http_conn::write()
 {
     int temp = 0;

@@ -2,7 +2,7 @@
 
 WebServer::WebServer()
 {
-    //http_conn类对象
+    // http_conn类对象
     users = new http_conn[MAX_FD];
 
     // 获取当前工作目录并将其与"/root" 路径拼接，存储在m_root中
@@ -13,7 +13,7 @@ WebServer::WebServer()
     strcpy(m_root, server_path);
     strcat(m_root, root);
 
-    //定时器
+    // 定时器
     users_timer = new client_data[MAX_FD];
 }
 
@@ -46,26 +46,26 @@ void WebServer::init(int port, string user, string passWord, string databaseName
 
 void WebServer::trig_mode()
 {
-    //LT + LT
-    if (0 == m_TRIGMode)
+    // LT + LT
+    if ( 0 == m_TRIGMode )
     {
         m_LISTENTrigmode = 0;
         m_CONNTrigmode = 0;
     }
-    //LT + ET
-    else if (1 == m_TRIGMode)
+    // LT + ET
+    else if ( 1 == m_TRIGMode )
     {
         m_LISTENTrigmode = 0;
         m_CONNTrigmode = 1;
     }
-    //ET + LT
-    else if (2 == m_TRIGMode)
+    // ET + LT
+    else if ( 2 == m_TRIGMode )
     {
         m_LISTENTrigmode = 1;
         m_CONNTrigmode = 0;
     }
-    //ET + ET
-    else if (3 == m_TRIGMode)
+    // ET + ET
+    else if ( 3 == m_TRIGMode )
     {
         m_LISTENTrigmode = 1;
         m_CONNTrigmode = 1;
@@ -86,27 +86,27 @@ void WebServer::log_write()
 
 void WebServer::sql_pool()
 {
-    //初始化数据库连接池
+    // 初始化数据库连接池
     m_connPool = connection_pool::GetInstance();
     m_connPool->init("localhost", m_user, m_passWord, m_databaseName, 3306, m_sql_num, m_close_log);
 
-    //初始化数据库读取表
+    // 初始化数据库读取表
     users->initmysql_result(m_connPool);
 }
 
 void WebServer::thread_pool()
 {
-    //线程池
+    // 线程池
     m_pool = new threadpool<http_conn>(m_actormodel, m_connPool, m_thread_num);
 }
 
 void WebServer::eventListen()
 {
-    //网络编程基础步骤
+    // 网络编程基础步骤
     m_listenfd = socket(PF_INET, SOCK_STREAM, 0);
     assert(m_listenfd >= 0);
 
-    //优雅关闭连接
+    // 优雅关闭连接
     if (0 == m_OPT_LINGER)
     {
         struct linger tmp = {0, 1};
@@ -134,7 +134,7 @@ void WebServer::eventListen()
 
     utils.init(TIMESLOT);
 
-    //epoll创建内核事件表
+    // epoll创建内核事件表
     epoll_event events[MAX_EVENT_NUMBER];
     m_epollfd = epoll_create(5);
     assert(m_epollfd != -1);
@@ -162,8 +162,8 @@ void WebServer::timer(int connfd, struct sockaddr_in client_address)
 {
     users[connfd].init(connfd, client_address, m_root, m_CONNTrigmode, m_close_log, m_user, m_passWord, m_databaseName);
 
-    //初始化client_data数据
-    //创建定时器，设置回调函数和超时时间，绑定用户数据，将定时器添加到链表中
+    // 初始化client_data数据
+    // 创建定时器，设置回调函数和超时时间，绑定用户数据，将定时器添加到链表中
     users_timer[connfd].address = client_address;
     users_timer[connfd].sockfd = connfd;
     util_timer *timer = new util_timer;
@@ -175,8 +175,8 @@ void WebServer::timer(int connfd, struct sockaddr_in client_address)
     utils.m_timer_lst.add_timer(timer);
 }
 
-//若有数据传输，则将定时器往后延迟3个单位
-//并对新的定时器在链表上的位置进行调整
+// 若有数据传输，则将定时器往后延迟3个单位
+// 并对新的定时器在链表上的位置进行调整
 void WebServer::adjust_timer(util_timer *timer)
 {
     time_t cur = time(NULL);
@@ -289,7 +289,7 @@ void WebServer::dealwithread(int sockfd)
             adjust_timer(timer);
         }
 
-        //若监测到读事件，将该事件放入请求队列
+        // 若监测到读事件，将该事件放入请求队列
         m_pool->append(users + sockfd, 0);
 
         while (true)
@@ -308,7 +308,7 @@ void WebServer::dealwithread(int sockfd)
     }
     else
     {
-        //proactor
+        // proactor
         if (users[sockfd].read_once())
         {
             LOG_INFO("deal with the client(%s)", inet_ntoa(users[sockfd].get_address()->sin_addr));
@@ -331,7 +331,7 @@ void WebServer::dealwithread(int sockfd)
 void WebServer::dealwithwrite(int sockfd)
 {
     util_timer *timer = users_timer[sockfd].timer;
-    //reactor
+    // reactor
     if (1 == m_actormodel)
     {
         if (timer)
@@ -357,7 +357,7 @@ void WebServer::dealwithwrite(int sockfd)
     }
     else
     {
-        //proactor
+        // proactor
         if (users[sockfd].write())
         {
             LOG_INFO("send data to the client(%s)", inet_ntoa(users[sockfd].get_address()->sin_addr));
@@ -392,7 +392,7 @@ void WebServer::eventLoop()
         {
             int sockfd = events[i].data.fd;
 
-            //处理新到的客户连接
+            // 处理新到的客户连接
             if (sockfd == m_listenfd)
             {
                 bool flag = dealclientdata();
@@ -401,18 +401,18 @@ void WebServer::eventLoop()
             }
             else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
             {
-                //服务器端关闭连接，移除对应的定时器
+                // 服务器端关闭连接，移除对应的定时器
                 util_timer *timer = users_timer[sockfd].timer;
                 deal_timer(timer, sockfd);
             }
-            //处理信号
+            // 处理信号
             else if ((sockfd == m_pipefd[0]) && (events[i].events & EPOLLIN))
             {
                 bool flag = dealwithsignal(timeout, stop_server);
                 if (false == flag)
                     LOG_ERROR("%s", "dealclientdata failure");
             }
-            //处理客户连接上接收到的数据
+            // 处理客户连接上接收到的数据
             else if (events[i].events & EPOLLIN)
             {
                 dealwithread(sockfd);

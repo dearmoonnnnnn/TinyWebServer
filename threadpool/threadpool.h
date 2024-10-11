@@ -24,15 +24,17 @@ private:
     void run();
 
 private:
-    int m_thread_number;        //线程池中的线程数
-    int m_max_requests;         //请求队列中允许的最大请求数
-    pthread_t *m_threads;       //描述线程池的数组，其大小为m_thread_number
-    std::list<T *> m_workqueue; //请求队列
-    locker m_queuelocker;       //保护请求队列的互斥锁
-    sem m_queuestat;            //是否有任务需要处理
-    connection_pool *m_connPool;  //数据库
-    int m_actor_model;          //模型切换
+    int m_thread_number;        // 线程池中的线程数
+    int m_max_requests;         // 请求队列中允许的最大请求数
+    pthread_t *m_threads;       // 描述线程池的数组，其大小为m_thread_number
+    std::list<T *> m_workqueue; // 请求队列
+    locker m_queuelocker;       // 保护请求队列的互斥锁
+    sem m_queuestat;            // 是否有任务需要处理
+    connection_pool *m_connPool;  // 数据库连接池
+    int m_actor_model;          // 模型切换
 };
+
+
 template <typename T>
 threadpool<T>::threadpool( int actor_model, connection_pool *connPool, int thread_number, int max_requests) : m_actor_model(actor_model),m_thread_number(thread_number), m_max_requests(max_requests), m_threads(NULL),m_connPool(connPool)
 {
@@ -41,6 +43,8 @@ threadpool<T>::threadpool( int actor_model, connection_pool *connPool, int threa
     m_threads = new pthread_t[m_thread_number];
     if (!m_threads)
         throw std::exception();
+
+    // 创建每个线程
     for (int i = 0; i < thread_number; ++i)
     {
         if (pthread_create(m_threads + i, NULL, worker, this) != 0)
@@ -55,6 +59,8 @@ threadpool<T>::threadpool( int actor_model, connection_pool *connPool, int threa
         }
     }
 }
+
+
 template <typename T>
 threadpool<T>::~threadpool()
 {
@@ -75,6 +81,7 @@ bool threadpool<T>::append(T *request, int state)
     m_queuestat.post();
     return true;
 }
+
 template <typename T>
 bool threadpool<T>::append_p(T *request)
 {
@@ -89,13 +96,20 @@ bool threadpool<T>::append_p(T *request)
     m_queuestat.post();
     return true;
 }
+
+
 template <typename T>
 void *threadpool<T>::worker(void *arg)
 {
+    // 静态类型转换
     threadpool *pool = (threadpool *)arg;
+    // 线程运行函数
     pool->run();
+    // 返回线程池
     return pool;
 }
+
+
 template <typename T>
 void threadpool<T>::run()
 {
