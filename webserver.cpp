@@ -2,10 +2,10 @@
 
 WebServer::WebServer()
 {
-    // http_conn类对象
+    // http_conn 类对象
     users = new http_conn[MAX_FD];
 
-    // 获取当前工作目录并将其与"/root" 路径拼接，存储在m_root中
+    // 获取当前工作目录并将其与 "/root" 路径拼接，存储在 m_root 中
     char server_path[200];
     getcwd(server_path, 200);
     char root[6] = "/root";
@@ -19,7 +19,7 @@ WebServer::WebServer()
 
 WebServer::~WebServer()
 {
-    close(m_epollfd);       // 关闭epoll
+    close(m_epollfd);       // 关闭 epoll
     close(m_listenfd);      // 关闭监听套接字
     close(m_pipefd[1]);     // 关闭管道
     close(m_pipefd[0]);     // 关闭管道
@@ -281,7 +281,7 @@ void WebServer::dealwithread(int sockfd)
 {
     util_timer *timer = users_timer[sockfd].timer;
 
-    //reactor
+    // reactor
     if (1 == m_actormodel)
     {
         if (timer)

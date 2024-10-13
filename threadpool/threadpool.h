@@ -66,6 +66,7 @@ threadpool<T>::~threadpool()
 {
     delete[] m_threads;
 }
+
 template <typename T>
 bool threadpool<T>::append(T *request, int state)
 {

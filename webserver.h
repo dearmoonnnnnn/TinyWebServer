@@ -121,7 +121,7 @@ public:
     void dealwithwrite(int sockfd);
 
 public:
-    //基础
+    // 基础
     int m_port;     // 监听端口
     char *m_root;   // 网站根目录
     int m_log_write;    // 日志写入方式
@@ -132,18 +132,18 @@ public:
     int m_epollfd;      // epoll文件描述符
     http_conn *users;   // 用户连接池
 
-    //数据库相关
+    // 数据库相关
     connection_pool *m_connPool;
     string m_user;              //登陆数据库用户名
     string m_passWord;          //登陆数据库密码
     string m_databaseName;      //使用数据库名
     int m_sql_num;              //数据库连接池数量
 
-    //线程池相关
+    // 线程池相关
     threadpool<http_conn> *m_pool;
     int m_thread_num;
 
-    //epoll_event相关
+    // epoll_event相关
     epoll_event events[MAX_EVENT_NUMBER];
 
     int m_listenfd;
